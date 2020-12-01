@@ -15,6 +15,7 @@
     "nodes": "./src"
   },
   "keywords": [
+    "node-red",
     "panasonic",
     "comfort-cloud",
     "heatpump",
