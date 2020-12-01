@@ -1,0 +1,37 @@
+<script type="text/javascript">
+    RED.nodes.registerType('comfort-cloud-groups', {
+        category: 'Comfort Cloud',
+        color: '#3FADB5',
+        defaults: {
+            name: { value: "" },
+            query: { value: "" },
+            comfortCloudConfig: { value: null, required: true, type: 'comfort-cloud-config' },
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-object-group",
+        label: function () {
+            return this.name || "groups";
+        },
+        paletteLabel: "groups",
+        labelStyle: function () {
+            return this.name ? "node_label_italic" : "";
+        },
+    });
+</script>
+
+<script type="text/html" data-template-name="comfort-cloud-groups">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-comfortCloudConfig"><i class="icon-tag"></i> Access Token</label>
+        <input type="text" id="node-input-comfortCloudConfig" placeholder="Access Token">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="comfort-cloud-groups">
+    <p>Node-RED Node-RED support Panasonic Comfort Cloud.</p>
+    <p>Returns a list of groups.</p>
+</script>

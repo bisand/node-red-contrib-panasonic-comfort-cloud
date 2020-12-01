@@ -1,0 +1,35 @@
+<!-- <script type="text/javascript" src="tools.js"></script> -->
+<script type="text/javascript">
+
+    RED.nodes.registerType("comfort-cloud-config", {
+        category: "config",
+        credentials: {
+            accessToken: {
+                type: 'text',
+            },
+        },
+        defaults: {
+            name: {
+                value: ""
+            }
+        },
+        label: function () {
+            return this.name ? this.name : 'accessToken';
+        },
+        oneditprepare: function () {
+            if (this.credentials.accessToken) {
+            }
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="comfort-cloud-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="icon-bookmark"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-accessToken"><i class="icon-bookmark"></i> Access Token</label>
+      <input type="text" id="node-config-input-accessToken" placeholder="accessToken">
+    </div>
+  </script>

@@ -1,0 +1,38 @@
+{
+  "name": "node-red-contrib-panasonic-comfort-cloud",
+  "version": "0.0.1-1",
+  "description": "Node-RED implementation of panasonic-comfort-cloud-client",
+  "main": "comfort-cloud.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bisand/node-red-contrib-panasonic-comfort-cloud.git"
+  },
+  "directories": {
+    "examples": "./examples",
+    "nodes": "./src"
+  },
+  "keywords": [
+    "panasonic",
+    "comfort-cloud",
+    "heatpump",
+    "heat-pump"
+  ],
+  "author": "André Biseth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bisand/node-red-contrib-panasonic-comfort-cloud/issues"
+  },
+  "homepage": "https://github.com/bisand/node-red-contrib-panasonic-comfort-cloud#readme",
+  "node-red": {
+    "nodes": {
+      "comfort-cloud-config": "./src/comfort-cloud-config.js",
+      "comfort-cloud-groups": "./src/comfort-cloud-groups.js"
+    }
+  },
+  "dependencies": {
+    "panasonic-comfort-cloud-client": "^1.0.3"
+  }
+}
