@@ -15,5 +15,5 @@ module.exports = function (RED) {
             node.send(msg);
         });
     }
-    RED.nodes.registerType("cc-groups", ComfortCloudGroups);
+    RED.nodes.registerType("pcc-groups", ComfortCloudGroups);
 }

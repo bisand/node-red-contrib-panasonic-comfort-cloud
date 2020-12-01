@@ -7,7 +7,7 @@ module.exports = function (RED) {
             console.log('EXPORT! Nothing done!');
         });
     }
-    RED.nodes.registerType('cc-config', ComfortCloudConfig, {
+    RED.nodes.registerType('pcc-config', ComfortCloudConfig, {
         credentials: {
             accessToken: {
                 type: 'text',
