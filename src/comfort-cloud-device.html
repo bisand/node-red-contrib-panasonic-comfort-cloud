@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('pcc-groups', {
+    RED.nodes.registerType('pcc-device', {
         category: 'Comfort Cloud',
         color: '#3FADB5',
         defaults: {
@@ -8,18 +8,18 @@
         },
         inputs: 1,
         outputs: 1,
-        icon: "font-awesome/fa-object-group",
+        icon: "font-awesome/fa-thermometer-half",
         label: function () {
-            return this.name || "groups";
+            return this.name || "device";
         },
-        paletteLabel: "groups",
+        paletteLabel: "device",
         labelStyle: function () {
             return this.name ? "node_label_italic" : "";
         },
     });
 </script>
 
-<script type="text/html" data-template-name="pcc-groups">
+<script type="text/html" data-template-name="pcc-device">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -30,7 +30,7 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="pcc-groups">
+<script type="text/html" data-help-name="pcc-device">
     <p>Node-RED Node-RED support Panasonic Comfort Cloud.</p>
-    <p>Returns a list of groups.</p>
+    <p>Returns a device based on device id from input.</p>
 </script>
