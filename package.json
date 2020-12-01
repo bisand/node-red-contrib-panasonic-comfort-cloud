@@ -29,8 +29,8 @@
   "homepage": "https://github.com/bisand/node-red-contrib-panasonic-comfort-cloud#readme",
   "node-red": {
     "nodes": {
-      "comfort-cloud-config": "./src/comfort-cloud-config.js",
-      "comfort-cloud-groups": "./src/comfort-cloud-groups.js"
+      "cc-config": "./src/comfort-cloud-config.js",
+      "cc-groups": "./src/comfort-cloud-groups.js"
     }
   },
   "dependencies": {

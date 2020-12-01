@@ -1,11 +1,11 @@
 <script type="text/javascript">
-    RED.nodes.registerType('comfort-cloud-groups', {
+    RED.nodes.registerType('cc-groups', {
         category: 'Comfort Cloud',
         color: '#3FADB5',
         defaults: {
             name: { value: "" },
             query: { value: "" },
-            comfortCloudConfig: { value: null, required: true, type: 'comfort-cloud-config' },
+            comfortCloudConfig: { value: null, required: true, type: 'cc-config' },
         },
         inputs: 1,
         outputs: 1,
@@ -20,7 +20,7 @@
     });
 </script>
 
-<script type="text/html" data-template-name="comfort-cloud-groups">
+<script type="text/html" data-template-name="cc-groups">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -31,7 +31,7 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="comfort-cloud-groups">
+<script type="text/html" data-help-name="cc-groups">
     <p>Node-RED Node-RED support Panasonic Comfort Cloud.</p>
     <p>Returns a list of groups.</p>
 </script>
