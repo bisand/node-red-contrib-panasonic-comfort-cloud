@@ -10,8 +10,14 @@ module.exports = function (RED) {
     RED.nodes.registerType('pcc-config', ComfortCloudConfig, {
         credentials: {
             accessToken: {
+                type: 'password',
+            },
+            username: {
                 type: 'text',
             },
+            password: {
+                type: 'password',
+            }
         },
     });
 };

@@ -5,7 +5,13 @@
         category: "config",
         credentials: {
             accessToken: {
+                type: 'password',
+            },
+            username: {
                 type: 'text',
+            },
+            password: {
+                type: 'password',
             },
         },
         defaults: {
@@ -14,7 +20,7 @@
             }
         },
         label: function () {
-            return this.name ? this.name : 'accessToken';
+            return this.name ? this.name : 'Comfort Cloud Config';
         },
         oneditprepare: function () {
             if (this.credentials.accessToken) {
@@ -29,7 +35,11 @@
         <input type="text" id="node-config-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-      <label for="node-config-input-accessToken"><i class="icon-bookmark"></i> Access Token</label>
-      <input type="text" id="node-config-input-accessToken" placeholder="accessToken">
+        <label for="node-config-input-username"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-config-input-username" placeholder="Username">
     </div>
-  </script>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="fa fa-key"></i> Password</label>
+        <input type="password" id="node-config-input-password" placeholder="Password">
+    </div>
+</script>
