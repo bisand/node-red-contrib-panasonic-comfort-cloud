@@ -12,13 +12,12 @@ module.exports = function (RED) {
             let client = new cloud.ComfortCloudClient();
             client.token = credentials.accessToken;
             let retryCount = 0;
-            let maxRetry = 3;
+            const maxRetry = 3;
             if (msg.payload === undefined || msg.payload === null || msg.payload === '') {
                 msg.payload = null;
                 node.send(msg);
             }
-            let device = null;
-            while (retryCount++ < 3) {
+            while (retryCount++ < maxRetry) {
                 try {
                     const groups = await client.getGroups();
                     msg.payload = groups;

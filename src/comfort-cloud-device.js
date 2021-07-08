@@ -12,16 +12,37 @@ module.exports = function (RED) {
             let client = new cloud.ComfortCloudClient();
             client.token = credentials.accessToken;
             let retryCount = 0;
-            let maxRetry = 3;
+            const maxRetry = 3;
             if (msg.payload === undefined || msg.payload === null || msg.payload === '') {
                 msg.payload = null;
                 node.send(msg);
             }
-            let device = null;
-            while (retryCount++ < 3) {
+            while (retryCount++ < maxRetry) {
                 try {
-                    device = await client.getDevice(msg.payload);
-                    msg.payload = device;
+                    node.log(msg.payload);
+                    // const device = await client.getDevice(msg.payload);
+                    const groups = await client.getGroups();
+                    const guid = msg.payload;
+                    msg.payload = null;
+                    let found = false;
+                    if (groups && groups.length > 0) {
+                        for (let i = 0; i < groups.length; i++) {
+                            const group = groups[i];
+                            if (group._devices && group._devices.length > 0) {
+                                for (let j = 0; j < group._devices.length; j++) {
+                                    const device = group._devices[j];
+                                    if (device && device.guid === guid) {
+                                        msg.payload = device;
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (found) {
+                                break;
+                            }
+                        }
+                    }
                     node.send(msg);
                     break;
                 } catch (err) {

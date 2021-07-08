@@ -35,6 +35,6 @@
     }
   },
   "dependencies": {
-    "panasonic-comfort-cloud-client": "^1.0.3"
+    "panasonic-comfort-cloud-client": "^1.1.2"
   }
 }
