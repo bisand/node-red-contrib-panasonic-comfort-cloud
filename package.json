@@ -4,7 +4,8 @@
   "description": "Node-RED implementation of panasonic-comfort-cloud-client",
   "main": "comfort-cloud.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node node_modules/node-red/red.js -v -u . -s settings.js",
+    "debug": "node --nolazy --inspect-brk=9229 node_modules/node-red/red.js -v -u . -s settings.js"
   },
   "repository": {
     "type": "git",
@@ -36,5 +37,8 @@
   },
   "dependencies": {
     "panasonic-comfort-cloud-client": "^1.1.2"
+  },
+  "devDependencies": {
+    "node-red": "^1.3.5"
   }
 }
