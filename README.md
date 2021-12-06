@@ -23,7 +23,7 @@ Takes device ID as an input in the payload or by providing it via the node confi
 ## Command
 Send commands to a device based on device id and commands provided by a JSON object.
 
-Commands must be injected as a JSON object containing the correct values. These values can be either an enum key (case insensitive) or value. The corresponding key/value pair are listed below.
+Commands must be injected as a JSON object containing the correct values. These values can be either an enum key (case insensitive) or value. The JSON object can consist of one or many properties/parameters. The corresponding key/value pair are listed below.
 
 ### Values
 Valid values for **operate**:
