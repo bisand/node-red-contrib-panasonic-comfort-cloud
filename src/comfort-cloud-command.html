@@ -38,5 +38,94 @@
 
 <script type="text/html" data-help-name="pcc-command">
     <p>Node-RED Node-RED support Panasonic Comfort Cloud.</p>
-    <p>Returns a device based on device id from setting or input.</p>
+    <p>Send commands to a device based on device id and commands provided by a JSON object.</p>
+    <p>Commands must be injected as a JSON object containing correct values. These values can be either an enum key (case insensitive) or value. The corresponding key/value pair are listed below.</p>
+    <h1>Values</h1>
+    <p>
+        Valid values for <strong>operate</strong>:
+        <ul>
+            <li>Off = 0</li>
+            <li>On = 1</li>
+        </ul>
+    </p>
+    <p>
+        Valid values for <strong>operationMode</strong>:
+        <ul>
+            <li>Auto = 0</li>
+            <li>Dry = 1</li>
+            <li>Cool = 2</li>
+            <li>Heat = 3</li>
+            <li>Fan = 4</li>
+        </ul>
+    </p>
+    <p>
+        Valid values for <strong>ecoMode</strong>:
+        <ul>
+            <li>Auto = 0</li>
+            <li>Powerful = 1</li>
+            <li>Quiet = 2</li>
+        </ul>
+    </p>
+    <p>
+        Valid values for <strong>temperatureSet</strong>:
+        <ul>
+            <li>8 - 30</li>
+        </ul>
+    </p>
+    <p>
+        Valid values for <strong>airSwingUD</strong>:
+        <ul>
+            <li>Up = 0</li>
+            <li>UpMid = 3</li>
+            <li>Mid = 2</li>
+            <li>DownMid = 4</li>
+            <li>Down = 1</li>
+        </ul>
+    </p>
+    <p>
+        Valid values for <strong>airSwingLR</strong>:
+        <ul>
+            <li>Left = 0</li>
+            <li>LeftMid = 4</li>
+            <li>Mid = 2</li>
+            <li>RightMid = 3</li>
+            <li>Right = 1</li>
+        </ul>
+    </p>
+    <p>
+        Valid values for <strong>fanAutoMode</strong>:
+        <ul>
+            <li>Disabled = 1</li>
+            <li>AirSwingAuto = 0</li>
+            <li>AirSwingLR = 3</li>
+            <li>AirSwingUD = 2</li>
+        </ul>
+    </p>
+    <p>
+        Valid values for <strong>fanSpeed</strong>:
+        <ul>
+            <li>Auto = 0</li>
+            <li>Low = 1</li>
+            <li>LowMid = 2</li>
+            <li>Mid = 3</li>
+            <li>HighMid = 4</li>
+            <li>High = 5</li>
+        </ul>
+    </p>
+    <h1>Payload example</h1>
+    <p>
+        <code>
+        {<br>
+            "deviceId": "CS-XXXXXXX+1234567890",<br>
+            "operate": "On",<br>
+            "operationMode": "Heat",<br>
+            "ecoMode": "Auto",<br>
+            "temperatureSet": 22,<br>
+            "airSwingUD": "Mid",<br>
+            "airSwingLR": "Mid",<br>
+            "fanAutoMode": "AirSwingAuto",<br>
+            "fanSpeed": "Auto"<br>
+        }<br>
+        </code>
+    </p>
 </script>

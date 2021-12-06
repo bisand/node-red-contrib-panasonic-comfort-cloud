@@ -11,6 +11,7 @@
                 "debug"
             ],
             "port": 9229,
+            "stopOnEntry": false,
             "skipFiles": [
                 "<node_internals>/**"
             ]

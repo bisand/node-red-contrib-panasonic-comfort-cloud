@@ -3,3 +3,4 @@ node_modules
 .config.*.json.backup
 flows_*
 .flows_*
+settings.js

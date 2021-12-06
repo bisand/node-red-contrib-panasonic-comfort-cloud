@@ -1,6 +1,27 @@
 // import { Device, Group, ComfortCloudClient } from 'panasonic-comfort-cloud-client';
 const cloud = require('panasonic-comfort-cloud-client');
-const { Power } = require('panasonic-comfort-cloud-client');
+const {
+    Power,
+    AirSwingLR,
+    AirSwingUD,
+    FanAutoMode,
+    EcoMode,
+    OperationMode,
+    FanSpeed
+} = require('panasonic-comfort-cloud-client');
+
+Object.defineProperty(Object.prototype, "getProp", {
+    value: function (prop) {
+        var key, self = this;
+        for (key in self) {
+            if (key.toLowerCase() == prop.toLowerCase()) {
+                return self[key];
+            }
+        }
+    },
+    //this keeps jquery happy
+    enumerable: false
+});
 
 module.exports = function (RED) {
     function ComfortCloudCommand(config) {
@@ -40,16 +61,71 @@ module.exports = function (RED) {
                     node.log(msg.payload);
                     const deviceId = _config.deviceId ? _config.deviceId : msg.payload.deviceId;
                     const device = await client.getDevice(deviceId);
-                    switch (msg.payload.command) {
-                        case 'off':
-                            device.operate = Power.Off;
-                            break;
-                        case 'on':
-                            device.operate = Power.On;
-                            break;
+
+                    if (msg.payload.operate) {
+                        const power = Number(isNaN(msg.payload.operate)
+                            ? Power.getProp(msg.payload.operate)
+                            : msg.payload.operate);
+                        node.log(power);
+                        if (!isNaN(power))
+                            device.power = power;
                     }
-                    msg.payload = device;
-                    msg.payload = await client.setDevice(device);
+                    if (msg.payload.operationMode) {
+                        const operationMode = Number(isNaN(msg.payload.operationMode)
+                            ? OperationMode.getProp(msg.payload.operationMode)
+                            : msg.payload.operationMode);
+                        node.log(operationMode);
+                        if (!isNaN(operationMode))
+                            device.operationMode = operationMode;
+                    }
+                    if (msg.payload.ecoMode) {
+                        const ecoMode = Number(isNaN(msg.payload.ecoMode)
+                            ? EcoMode.getProp(msg.payload.ecoMode)
+                            : msg.payload.ecoMode);
+                        node.log(ecoMode);
+                        if (!isNaN(ecoMode))
+                            device.ecoMode = ecoMode;
+                    }
+                    if (msg.payload.temperatureSet) {
+                        const temperature = Number(msg.payload.temperatureSet);
+                        node.log(temperature);
+                        if (!isNaN(temperature))
+                            device.temperatureSet = temperature;
+                    }
+                    if (msg.payload.airSwingUD) {
+                        const airSwingUD = Number(isNaN(msg.payload.airSwingUD)
+                            ? AirSwingUD.getProp(msg.payload.airSwingUD)
+                            : msg.payload.airSwingUD);
+                        node.log(airSwingUD);
+                        if (!isNaN(airSwingUD))
+                            device.airSwingUD = airSwingUD;
+                    }
+                    if (msg.payload.airSwingLR) {
+                        const airSwingLR = Number(isNaN(msg.payload.airSwingLR)
+                            ? AirSwingLR.getProp(msg.payload.airSwingLR)
+                            : msg.payload.airSwingLR);
+                        node.log(airSwingLR);
+                        if (!isNaN(airSwingLR))
+                            device.airSwingLR = airSwingLR;
+                    }
+                    if (msg.payload.fanAutoMode) {
+                        const fanAutoMode = Number(isNaN(msg.payload.fanAutoMode)
+                            ? FanAutoMode.getProp(msg.payload.fanAutoMode)
+                            : msg.payload.fanAutoMode);
+                        node.log(fanAutoMode);
+                        if (!isNaN(fanAutoMode))
+                            device.fanAutoMode = fanAutoMode;
+                    }
+                    if (msg.payload.fanSpeed) {
+                        const fanSpeed = Number(isNaN(msg.payload.fanSpeed)
+                            ? FanSpeed.getProp(msg.payload.fanSpeed)
+                            : msg.payload.fanSpeed);
+                        node.log(fanSpeed);
+                        if (!isNaN(fanSpeed))
+                            device.fanSpeed = fanSpeed;
+                    }
+
+                    msg.payload = await client.setParameters(deviceId, device.parameters);
                     send(msg);
                     break;
                 } catch (err) {
