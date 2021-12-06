@@ -32,7 +32,8 @@
     "nodes": {
       "pcc-config": "./src/comfort-cloud-config.js",
       "pcc-groups": "./src/comfort-cloud-groups.js",
-      "pcc-device": "./src/comfort-cloud-device.js"
+      "pcc-device": "./src/comfort-cloud-device.js",
+      "pcc-command": "./src/comfort-cloud-command.js"
     }
   },
   "dependencies": {

@@ -1,5 +1,6 @@
 // import { Device, Group, ComfortCloudClient } from 'panasonic-comfort-cloud-client';
 const cloud = require('panasonic-comfort-cloud-client');
+const { Power } = require('panasonic-comfort-cloud-client');
 
 module.exports = function (RED) {
     function ComfortCloudCommand(config) {
@@ -37,9 +38,18 @@ module.exports = function (RED) {
             while (retryCount++ < maxRetry) {
                 try {
                     node.log(msg.payload);
-                    const deviceId = _config.deviceId ?? msg.payload;
+                    const deviceId = _config.deviceId ? _config.deviceId : msg.payload.deviceId;
                     const device = await client.getDevice(deviceId);
+                    switch (msg.payload.command) {
+                        case 'off':
+                            device.operate = Power.Off;
+                            break;
+                        case 'on':
+                            device.operate = Power.On;
+                            break;
+                    }
                     msg.payload = device;
+                    msg.payload = await client.setDevice(device);
                     send(msg);
                     break;
                 } catch (err) {

@@ -29,7 +29,7 @@ module.exports = function (RED) {
             while (retryCount++ < maxRetry) {
                 try {
                     node.log(msg.payload);
-                    const deviceId = _config.deviceId ?? msg.payload;
+                    const deviceId = _config.deviceId ? _config.deviceId : msg.payload;
                     const device = await client.getDevice(deviceId);
                     msg.payload = device;
                     send(msg);
