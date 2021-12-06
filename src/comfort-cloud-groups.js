@@ -8,20 +8,20 @@ module.exports = function (RED) {
         var context = this.context();
         var globalContext = this.context().global;
         var credentials = RED.nodes.getCredentials(config.comfortCloudConfig);
-        node.on('input', async function (msg) {
+        node.on('input', async function (msg, send, done) {
             let client = new cloud.ComfortCloudClient();
             client.token = credentials.accessToken;
             let retryCount = 0;
             const maxRetry = 3;
             if (msg.payload === undefined || msg.payload === null || msg.payload === '') {
                 msg.payload = null;
-                node.send(msg);
+                send(msg);
             }
             while (retryCount++ < maxRetry) {
                 try {
                     const groups = await client.getGroups();
                     msg.payload = groups;
-                    node.send(msg);
+                    send(msg);
                     break;
                 } catch (err) {
                     try {
@@ -37,6 +37,10 @@ module.exports = function (RED) {
             }
             if (retryCount >= maxRetry) {
                 node.error('Reached max retry count ' + maxRetry + '. Please check your credentials, or read the logs for more information.')
+            }
+
+            if (done) {
+                done();
             }
         });
     }

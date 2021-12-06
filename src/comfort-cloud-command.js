@@ -2,7 +2,7 @@
 const cloud = require('panasonic-comfort-cloud-client');
 
 module.exports = function (RED) {
-    function ComfortCloudDevice(config) {
+    function ComfortCloudCommand(config) {
         RED.nodes.createNode(this, config);
         const node = this;
         const _config = config;
@@ -18,8 +18,16 @@ module.exports = function (RED) {
             client.token = credentials.accessToken;
             let retryCount = 0;
             const maxRetry = 3;
-            if (!_config.deviceId && (msg.payload === undefined || msg.payload === null || msg.payload === '')) {
+            if (!_config.deviceId && !msg.payload && !msg.payload.deviceId) {
                 const err = 'Missing Device ID. Send Device ID via payload or define in config.';
+                if (done) {
+                    done(err);
+                } else {
+                    node.error(err, msg);
+                }
+            }
+            if (!msg.payload && !msg.payload.command) {
+                const err = 'Missing command. Send command via payload.';
                 if (done) {
                     done(err);
                 } else {
@@ -55,5 +63,5 @@ module.exports = function (RED) {
             }
         });
     }
-    RED.nodes.registerType("pcc-device", ComfortCloudDevice);
+    RED.nodes.registerType("pcc-command", ComfortCloudCommand);
 }

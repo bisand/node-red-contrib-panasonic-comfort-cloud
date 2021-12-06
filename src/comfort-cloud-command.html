@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    RED.nodes.registerType('pcc-device', {
+    RED.nodes.registerType('pcc-command', {
         category: 'Comfort Cloud',
         color: '#3FADB5',
         defaults: {
@@ -9,18 +9,18 @@
         },
         inputs: 1,
         outputs: 1,
-        icon: "font-awesome/fa-thermometer-half",
+        icon: "font-awesome/fa-terminal",
         label: function () {
-            return this.name || 'device';
+            return this.name || 'command';
         },
-        paletteLabel: 'device',
+        paletteLabel: 'command',
         labelStyle: function () {
             return this.name ? 'node_label_italic' : '';
         },
     });
 </script>
 
-<script type="text/html" data-template-name="pcc-device">
+<script type="text/html" data-template-name="pcc-command">
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
@@ -36,7 +36,7 @@
     </div>
 </script>
 
-<script type="text/html" data-help-name="pcc-device">
+<script type="text/html" data-help-name="pcc-command">
     <p>Node-RED Node-RED support Panasonic Comfort Cloud.</p>
     <p>Returns a device based on device id from setting or input.</p>
 </script>
