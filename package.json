@@ -4,8 +4,8 @@
   "description": "Node-RED implementation of panasonic-comfort-cloud-client",
   "main": "comfort-cloud.js",
   "scripts": {
-    "start": "node node_modules/node-red/red.js -v -u . -s settings.js",
-    "debug": "node --nolazy --inspect-brk=9229 node_modules/node-red/red.js -v -u . -s settings.js"
+    "start": "node node_modules/node-red/red.js -v -u . -s node_modules/node-red/settings.js",
+    "debug": "node --nolazy --inspect-brk=9229 node_modules/node-red/red.js -v -u . -s node_modules/node-red/settings.js"
   },
   "repository": {
     "type": "git",
