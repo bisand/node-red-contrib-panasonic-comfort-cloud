@@ -24,6 +24,29 @@ Object.defineProperty(Object.prototype, "getProp", {
 });
 
 module.exports = function (RED) {
+    function getType(p) {
+        if (Array.isArray(p)) return 'array';
+        else if (typeof p == 'string') return 'string';
+        else if (p != null && typeof p == 'object') return 'object';
+        else return 'other';
+    }
+
+    function validatePayload(payload) {
+        if (payload) {
+            try {
+                if (getType(payload) === 'string')
+                    payload = JSON.parse(payload);
+                if (getType(payload) === 'object')
+                    return { result: true, payload };
+            } catch (error) {
+                let err = new Error(`An error ocurred while parsing payload. Payload must be valid JSON. Error: ${error}`);
+                return { result: false, payload, err };
+            }
+        }
+        const err = new Error('Payload must be valid JSON.');
+        return { result: false, payload, err };
+    }
+
     function ComfortCloudCommand(config) {
         RED.nodes.createNode(this, config);
         const node = this;
@@ -40,86 +63,92 @@ module.exports = function (RED) {
             client.token = credentials.accessToken;
             let retryCount = 0;
             const maxRetry = 3;
-            if (!_config.deviceId && !msg.payload && !msg.payload.deviceId) {
+
+            const payloadValidation = validatePayload(msg.payload)
+            if (!payloadValidation.result) {
+                if (done) {
+                    done(payloadValidation.err);
+                } else {
+                    node.error(payloadValidation.err, msg);
+                }
+                return;
+            }
+            const payload = payloadValidation.payload;
+
+            if (!_config.deviceId && !payload?.deviceId) {
                 const err = 'Missing Device ID. Send Device ID via payload or define in config.';
                 if (done) {
                     done(err);
                 } else {
                     node.error(err, msg);
                 }
+                return;
             }
-            if (!msg.payload && !msg.payload.command) {
-                const err = 'Missing command. Send command via payload.';
-                if (done) {
-                    done(err);
-                } else {
-                    node.error(err, msg);
-                }
-            }
+
             while (retryCount++ < maxRetry) {
                 try {
-                    node.log(msg.payload);
-                    const deviceId = _config.deviceId ? _config.deviceId : msg.payload.deviceId;
+                    node.log(payload);
+                    const deviceId = _config.deviceId ? _config.deviceId : payload.deviceId;
                     const device = await client.getDevice(deviceId);
 
-                    if (msg.payload.operate) {
-                        const power = Number(isNaN(msg.payload.operate)
-                            ? Power.getProp(msg.payload.operate)
-                            : msg.payload.operate);
+                    if (payload.operate) {
+                        const power = Number(isNaN(payload.operate)
+                            ? Power.getProp(payload.operate)
+                            : payload.operate);
                         node.log(power);
                         if (!isNaN(power))
                             device.power = power;
                     }
-                    if (msg.payload.operationMode) {
-                        const operationMode = Number(isNaN(msg.payload.operationMode)
-                            ? OperationMode.getProp(msg.payload.operationMode)
-                            : msg.payload.operationMode);
+                    if (payload.operationMode) {
+                        const operationMode = Number(isNaN(payload.operationMode)
+                            ? OperationMode.getProp(payload.operationMode)
+                            : payload.operationMode);
                         node.log(operationMode);
                         if (!isNaN(operationMode))
                             device.operationMode = operationMode;
                     }
-                    if (msg.payload.ecoMode) {
-                        const ecoMode = Number(isNaN(msg.payload.ecoMode)
-                            ? EcoMode.getProp(msg.payload.ecoMode)
-                            : msg.payload.ecoMode);
+                    if (payload.ecoMode) {
+                        const ecoMode = Number(isNaN(payload.ecoMode)
+                            ? EcoMode.getProp(payload.ecoMode)
+                            : payload.ecoMode);
                         node.log(ecoMode);
                         if (!isNaN(ecoMode))
                             device.ecoMode = ecoMode;
                     }
-                    if (msg.payload.temperatureSet) {
-                        const temperature = Number(msg.payload.temperatureSet);
+                    if (payload.temperatureSet) {
+                        const temperature = Number(payload.temperatureSet);
                         node.log(temperature);
                         if (!isNaN(temperature))
                             device.temperatureSet = temperature;
                     }
-                    if (msg.payload.airSwingUD) {
-                        const airSwingUD = Number(isNaN(msg.payload.airSwingUD)
-                            ? AirSwingUD.getProp(msg.payload.airSwingUD)
-                            : msg.payload.airSwingUD);
+                    if (payload.airSwingUD) {
+                        const airSwingUD = Number(isNaN(payload.airSwingUD)
+                            ? AirSwingUD.getProp(payload.airSwingUD)
+                            : payload.airSwingUD);
                         node.log(airSwingUD);
                         if (!isNaN(airSwingUD))
                             device.airSwingUD = airSwingUD;
                     }
-                    if (msg.payload.airSwingLR) {
-                        const airSwingLR = Number(isNaN(msg.payload.airSwingLR)
-                            ? AirSwingLR.getProp(msg.payload.airSwingLR)
-                            : msg.payload.airSwingLR);
+                    if (payload.airSwingLR) {
+                        const airSwingLR = Number(isNaN(payload.airSwingLR)
+                            ? AirSwingLR.getProp(payload.airSwingLR)
+                            : payload.airSwingLR);
                         node.log(airSwingLR);
                         if (!isNaN(airSwingLR))
                             device.airSwingLR = airSwingLR;
                     }
-                    if (msg.payload.fanAutoMode) {
-                        const fanAutoMode = Number(isNaN(msg.payload.fanAutoMode)
-                            ? FanAutoMode.getProp(msg.payload.fanAutoMode)
-                            : msg.payload.fanAutoMode);
+                    if (payload.fanAutoMode) {
+                        const fanAutoMode = Number(isNaN(payload.fanAutoMode)
+                            ? FanAutoMode.getProp(payload.fanAutoMode)
+                            : payload.fanAutoMode);
                         node.log(fanAutoMode);
                         if (!isNaN(fanAutoMode))
                             device.fanAutoMode = fanAutoMode;
                     }
-                    if (msg.payload.fanSpeed) {
-                        const fanSpeed = Number(isNaN(msg.payload.fanSpeed)
-                            ? FanSpeed.getProp(msg.payload.fanSpeed)
-                            : msg.payload.fanSpeed);
+                    if (payload.fanSpeed) {
+                        const fanSpeed = Number(isNaN(payload.fanSpeed)
+                            ? FanSpeed.getProp(payload.fanSpeed)
+                            : payload.fanSpeed);
                         node.log(fanSpeed);
                         if (!isNaN(fanSpeed))
                             device.fanSpeed = fanSpeed;
@@ -128,20 +157,39 @@ module.exports = function (RED) {
                     msg.payload = await client.setParameters(deviceId, device.parameters);
                     send(msg);
                     break;
-                } catch (err) {
+                } catch (error) {
                     try {
+                        if (error.httpCode === 403) {
+                            const err = new Error(`An error ocurred while trying to set device parameter. Check Device ID or credentials: ${error}`)
+                            if (done) {
+                                done(err);
+                            } else {
+                                node.error(err, msg);
+                            }
+                            return;
+                        }
+
                         let accessToken = await client.login(credentials.username, credentials.password);
                         credentials.accessToken = accessToken;
                         RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
                         node.log('Obtained a new access token.');
                     } catch (loginErr) {
-                        node.error(loginErr);
+                        if (done) {
+                            done(loginErr);
+                        } else {
+                            node.error(loginErr, msg);
+                        }
                         break;
                     }
                 }
             }
             if (retryCount >= maxRetry) {
-                node.error('Reached max retry count ' + maxRetry + '. Please check your credentials, or read the logs for more information.')
+                const retryErr = new Error('Reached max retry count ' + maxRetry + '. Please check your credentials, or read the logs for more information.');
+                if (done) {
+                    done(retryErr);
+                } else {
+                    node.error(retryErr, msg);
+                }
             }
 
             if (done) {
