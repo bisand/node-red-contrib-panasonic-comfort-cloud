@@ -75,7 +75,7 @@ module.exports = function (RED) {
             }
             const payload = payloadValidation.payload;
 
-            if (!_config.deviceId && !payload?.deviceId) {
+            if (!_config.deviceId && (!payload || !payload.deviceId)) {
                 const err = 'Missing Device ID. Send Device ID via payload or define in config.';
                 if (done) {
                     done(err);
