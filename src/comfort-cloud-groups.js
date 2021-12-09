@@ -2,6 +2,37 @@
 const cloud = require('panasonic-comfort-cloud-client');
 
 module.exports = function (RED) {
+    function mapValue(input) {
+        const result = {};
+        Object.keys(input).forEach(key => {
+            if (typeof input[key] === 'object')
+                result[key.indexOf('_') == 0 ? key.substring(1) : key] = mapObject(input[key]);
+            else
+                result[key.indexOf('_') == 0 ? key.substring(1) : key] = input[key];
+        });
+        return result;
+    }
+
+    function mapObject(input) {
+        const result = Array.isArray(input) ? [] : {};
+        if (Array.isArray(input)) {
+            input.forEach(item => {
+                if (typeof item === 'object')
+                    result[key.indexOf('_') == 0 ? key.substring(1) : key] = mapObject(input[key]);
+                else
+                    result.push(input);
+            });
+        } else {
+            Object.keys(input).forEach(key => {
+                if (Array.isArray(input[key]))
+                    result.push(mapObject(input[key]));
+                else
+                    result[key.indexOf('_') == 0 ? key.substring(1) : key] = mapValue(input[key]);
+            });
+        }
+        return result;
+    }
+
     function ComfortCloudGroups(config) {
         RED.nodes.createNode(this, config);
         var node = this;
@@ -20,10 +51,10 @@ module.exports = function (RED) {
             while (retryCount++ < maxRetry) {
                 try {
                     const groups = await client.getGroups();
-                    msg.payload = groups;
+                    msg.payload = mapObject(groups);
                     send(msg);
                     break;
-                } catch (err) {
+                } catch (error) {
                     try {
                         if (error.httpCode === 401) {
                             let accessToken = await client.login(credentials.username, credentials.password);

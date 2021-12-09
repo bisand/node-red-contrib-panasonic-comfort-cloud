@@ -3,7 +3,11 @@ const cloud = require('panasonic-comfort-cloud-client');
 
 module.exports = function (RED) {
     function mapDevice(input) {
-        
+        const result = {};
+        Object.keys(input).forEach(key => {
+            result[key.indexOf('_') == 0 ? key.substring(1) : key] = input[key];
+        });
+        return result;
     }
 
     function ComfortCloudDevice(config) {
@@ -38,7 +42,7 @@ module.exports = function (RED) {
                     msg.payload = mapDevice(device);
                     send(msg);
                     break;
-                } catch (err) {
+                } catch (error) {
                     try {
                         if (error.httpCode === 401) {
                             let accessToken = await client.login(credentials.username, credentials.password);
