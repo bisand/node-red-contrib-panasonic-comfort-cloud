@@ -10,7 +10,7 @@ module.exports = function (RED) {
         var credentials = RED.nodes.getCredentials(config.comfortCloudConfig);
         node.on('input', async function (msg, send, done) {
             let client = new cloud.ComfortCloudClient();
-            client.token = credentials.accessToken;
+            client.token = credentials.accessToken ? credentials.accessToken : '42';
             let retryCount = 0;
             const maxRetry = 3;
             if (msg.payload === undefined || msg.payload === null || msg.payload === '') {
@@ -25,12 +25,34 @@ module.exports = function (RED) {
                     break;
                 } catch (err) {
                     try {
-                        let accessToken = await client.login(credentials.username, credentials.password);
-                        credentials.accessToken = accessToken;
-                        RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
-                        node.log('Obtained a new access token.');
+                        if (error.httpCode === 401) {
+                            let accessToken = await client.login(credentials.username, credentials.password);
+                            credentials.accessToken = accessToken;
+                            RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
+                            node.log('Obtained a new access token.');
+                        } else if (error.httpCode === 403) {
+                            const err = new Error(`An error ocurred while trying to get group. Check credentials: ${error}`)
+                            if (done) {
+                                done(err);
+                            } else {
+                                node.error(err, msg);
+                            }
+                            return;
+                        } else {
+                            const err = new Error(`An error ocurred while trying to get group: ${error}`)
+                            if (done) {
+                                done(err);
+                            } else {
+                                node.error(err, msg);
+                            }
+                            return;
+                        }
                     } catch (loginErr) {
-                        node.error(loginErr);
+                        if (done) {
+                            done(loginErr);
+                        } else {
+                            node.error(loginErr, msg);
+                        }
                         break;
                     }
                 }

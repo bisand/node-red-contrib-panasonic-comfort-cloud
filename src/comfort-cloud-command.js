@@ -60,7 +60,7 @@ module.exports = function (RED) {
             // fallback to using `node.send`
             send = send || function () { node.send.apply(node, arguments) }
             let client = new cloud.ComfortCloudClient();
-            client.token = credentials.accessToken;
+            client.token = credentials.accessToken ? credentials.accessToken : '42';
             let retryCount = 0;
             const maxRetry = 3;
 
@@ -159,8 +159,21 @@ module.exports = function (RED) {
                     break;
                 } catch (error) {
                     try {
-                        if (error.httpCode === 403) {
-                            const err = new Error(`An error ocurred while trying to set device parameter. Check Device ID or credentials: ${error}`)
+                        if (error.httpCode === 401) {
+                            let accessToken = await client.login(credentials.username, credentials.password);
+                            credentials.accessToken = accessToken;
+                            RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
+                            node.log('Obtained a new access token.');
+                        } else if (error.httpCode === 403) {
+                            const err = new Error(`An error ocurred while trying to set device parameter. Check Device ID (${deviceId}) or credentials: ${error}`)
+                            if (done) {
+                                done(err);
+                            } else {
+                                node.error(err, msg);
+                            }
+                            return;
+                        } else {
+                            const err = new Error(`An error ocurred while trying to set device parameter: ${error}`)
                             if (done) {
                                 done(err);
                             } else {
@@ -168,11 +181,6 @@ module.exports = function (RED) {
                             }
                             return;
                         }
-
-                        let accessToken = await client.login(credentials.username, credentials.password);
-                        credentials.accessToken = accessToken;
-                        RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
-                        node.log('Obtained a new access token.');
                     } catch (loginErr) {
                         if (done) {
                             done(loginErr);

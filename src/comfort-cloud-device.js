@@ -2,6 +2,10 @@
 const cloud = require('panasonic-comfort-cloud-client');
 
 module.exports = function (RED) {
+    function mapDevice(input) {
+        
+    }
+
     function ComfortCloudDevice(config) {
         RED.nodes.createNode(this, config);
         const node = this;
@@ -15,7 +19,7 @@ module.exports = function (RED) {
             // fallback to using `node.send`
             send = send || function () { node.send.apply(node, arguments) }
             let client = new cloud.ComfortCloudClient();
-            client.token = credentials.accessToken;
+            client.token = credentials.accessToken ? credentials.accessToken : '42';
             let retryCount = 0;
             const maxRetry = 3;
             if (!_config.deviceId && (msg.payload === undefined || msg.payload === null || msg.payload === '')) {
@@ -31,17 +35,39 @@ module.exports = function (RED) {
                     node.log(msg.payload);
                     const deviceId = _config.deviceId ? _config.deviceId : msg.payload;
                     const device = await client.getDevice(deviceId);
-                    msg.payload = device;
+                    msg.payload = mapDevice(device);
                     send(msg);
                     break;
                 } catch (err) {
                     try {
-                        let accessToken = await client.login(credentials.username, credentials.password);
-                        credentials.accessToken = accessToken;
-                        RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
-                        node.log('Obtained a new access token.');
+                        if (error.httpCode === 401) {
+                            let accessToken = await client.login(credentials.username, credentials.password);
+                            credentials.accessToken = accessToken;
+                            RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
+                            node.log('Obtained a new access token.');
+                        } else if (error.httpCode === 403) {
+                            const err = new Error(`An error ocurred while trying to get device. Check Device ID or credentials: ${error}`)
+                            if (done) {
+                                done(err);
+                            } else {
+                                node.error(err, msg);
+                            }
+                            return;
+                        } else {
+                            const err = new Error(`An error ocurred while trying to get device: ${error}`)
+                            if (done) {
+                                done(err);
+                            } else {
+                                node.error(err, msg);
+                            }
+                            return;
+                        }
                     } catch (loginErr) {
-                        node.error(loginErr);
+                        if (done) {
+                            done(loginErr);
+                        } else {
+                            node.error(loginErr, msg);
+                        }
                         break;
                     }
                 }
