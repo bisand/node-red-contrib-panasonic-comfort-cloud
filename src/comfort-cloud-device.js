@@ -1,19 +1,13 @@
 // import { Device, Group, ComfortCloudClient } from 'panasonic-comfort-cloud-client';
 const cloud = require('panasonic-comfort-cloud-client');
+const Tools = require('./tools');
 
 module.exports = function (RED) {
-    function mapDevice(input) {
-        const result = {};
-        Object.keys(input).forEach(key => {
-            result[key.indexOf('_') == 0 ? key.substring(1) : key] = input[key];
-        });
-        return result;
-    }
-
     function ComfortCloudDevice(config) {
         RED.nodes.createNode(this, config);
         const node = this;
         const _config = config;
+        const _tools = new Tools();
         var context = this.context();
         var globalContext = this.context().global;
         let credentials = RED.nodes.getCredentials(config.comfortCloudConfig);
@@ -39,7 +33,7 @@ module.exports = function (RED) {
                     node.log(msg.payload);
                     const deviceId = _config.deviceId ? _config.deviceId : msg.payload;
                     const device = await client.getDevice(deviceId);
-                    msg.payload = mapDevice(device);
+                    msg.payload = _tools.mapObject(device);
                     send(msg);
                     break;
                 } catch (error) {
