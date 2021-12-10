@@ -4,6 +4,7 @@ class Tools {
 
     constructor() { }
 
+    /** Map object and remove leading underscores on properties */
     mapObject(input) {
         let result = Array.isArray(input) ? [] : {};
         if (Array.isArray(input)) {
@@ -12,7 +13,8 @@ class Tools {
             });
         } else if (typeof input === 'object') {
             Object.keys(input).forEach(key => {
-                result[key.indexOf('_') == 0 ? key.substring(1) : key] = this.mapObject(input[key]);
+                const k = key.indexOf('_') == 0 ? key.substring(1) : key;
+                result[k] = this.mapObject(input[key]);
             });
         } else {
             result = input;
