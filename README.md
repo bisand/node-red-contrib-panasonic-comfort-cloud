@@ -1,6 +1,6 @@
 # node-red-contrib-panasonic-comfort-cloud
 
-Node-RED support for Panasonic Comfort Cloud to control air conditioning systems over REST API. This libaray uses the same endpoints as the mobile app Panasonic Comfort Cloud. Based on [panasonic-comfort-cloud-client](https://www.npmjs.com/package/panasonic-comfort-cloud-client). Thanks to [marc2016](https://github.com/marc2016/) for creating this library!
+Node-RED support for Panasonic Comfort Cloud to control air conditioning systems over REST API. This libaray uses the same endpoints as the mobile app Panasonic Comfort Cloud. Based on [panasonic-comfort-cloud-api](https://www.npmjs.com/package/panasonic-comfort-cloud-api). Thanks to [marc2016](https://github.com/marc2016/) for creating this library!
 
 # Features
 
