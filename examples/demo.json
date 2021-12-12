@@ -1,0 +1,194 @@
+[
+    {
+        "id": "47f463a8043071db",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "40bb4724b1243a96",
+        "type": "pcc-groups",
+        "z": "47f463a8043071db",
+        "name": "",
+        "comfortCloudConfig": "52f664d5dd795c02",
+        "x": 390,
+        "y": 140,
+        "wires": [
+            [
+                "3f454dc19761538b"
+            ]
+        ]
+    },
+    {
+        "id": "10407120ec14048b",
+        "type": "inject",
+        "z": "47f463a8043071db",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "40bb4724b1243a96"
+            ]
+        ]
+    },
+    {
+        "id": "3f454dc19761538b",
+        "type": "debug",
+        "z": "47f463a8043071db",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "5bf547b2302eb6c1",
+        "type": "inject",
+        "z": "47f463a8043071db",
+        "name": "DeviceGuid",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "CS-XXXXXXX+0123456789",
+        "payloadType": "str",
+        "x": 210,
+        "y": 200,
+        "wires": [
+            [
+                "96019d287145e301"
+            ]
+        ]
+    },
+    {
+        "id": "f0d3d6c0354d3dab",
+        "type": "debug",
+        "z": "47f463a8043071db",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "96019d287145e301",
+        "type": "pcc-device",
+        "z": "47f463a8043071db",
+        "name": "",
+        "comfortCloudConfig": "52f664d5dd795c02",
+        "deviceId": "",
+        "x": 390,
+        "y": 200,
+        "wires": [
+            [
+                "f0d3d6c0354d3dab"
+            ]
+        ]
+    },
+    {
+        "id": "4a91a9ffe283656f",
+        "type": "pcc-command",
+        "z": "47f463a8043071db",
+        "name": "",
+        "comfortCloudConfig": "52f664d5dd795c02",
+        "deviceId": "",
+        "x": 400,
+        "y": 260,
+        "wires": [
+            [
+                "2f7bc8195ba1d65c"
+            ]
+        ]
+    },
+    {
+        "id": "ce295dda4abc61f1",
+        "type": "inject",
+        "z": "47f463a8043071db",
+        "name": "Json Object",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"deviceGuid\":\"CS-XXXXXXX+0123456789\",\"temperatureSet\":23,\"test\":123}",
+        "payloadType": "json",
+        "x": 210,
+        "y": 260,
+        "wires": [
+            [
+                "4a91a9ffe283656f"
+            ]
+        ]
+    },
+    {
+        "id": "2f7bc8195ba1d65c",
+        "type": "debug",
+        "z": "47f463a8043071db",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "52f664d5dd795c02",
+        "type": "pcc-config",
+        "name": "Bogenhuset"
+    }
+]

@@ -87,6 +87,7 @@ Valid values for **fanSpeed**:
     "fanSpeed": "Auto"
 }
 ```
+
 ## Licence
 
 [MIT](https://github.com/bisand/node-red-contrib-panasonic-comfort-cloud/blob/HEAD/LICENSE)
