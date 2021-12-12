@@ -75,7 +75,7 @@ module.exports = function (RED) {
             }
             const payload = payloadValidation.payload;
 
-            if (!_config.deviceId && (!payload || !payload.deviceId)) {
+            if (!_config.deviceId && (!payload || (!payload.deviceId && !payload.deviceGuid))) {
                 const err = 'Missing Device ID. Send Device ID via payload or define in config.';
                 if (done) {
                     done(err);
@@ -87,9 +87,10 @@ module.exports = function (RED) {
 
             while (retryCount++ < maxRetry) {
                 try {
-                    node.log(payload);
-                    const deviceId = _config.deviceId ? _config.deviceId : payload.deviceId;
-                    const device = await client.getDevice(deviceId);
+                    const pid = (payload.deviceId ? payload.deviceId : payload.deviceGuid);
+                    const deviceId = pid ? pid : _config.deviceId;
+                    // const device = await client.getDevice(deviceId);
+                    const parameters = {};
 
                     if (payload.operate) {
                         const power = Number(isNaN(payload.operate)
@@ -97,7 +98,7 @@ module.exports = function (RED) {
                             : payload.operate);
                         node.log(power);
                         if (!isNaN(power))
-                            device.power = power;
+                            parameters.power = power;
                     }
                     if (payload.operationMode) {
                         const operationMode = Number(isNaN(payload.operationMode)
@@ -105,7 +106,7 @@ module.exports = function (RED) {
                             : payload.operationMode);
                         node.log(operationMode);
                         if (!isNaN(operationMode))
-                            device.operationMode = operationMode;
+                            parameters.operationMode = operationMode;
                     }
                     if (payload.ecoMode) {
                         const ecoMode = Number(isNaN(payload.ecoMode)
@@ -113,13 +114,13 @@ module.exports = function (RED) {
                             : payload.ecoMode);
                         node.log(ecoMode);
                         if (!isNaN(ecoMode))
-                            device.ecoMode = ecoMode;
+                            parameters.ecoMode = ecoMode;
                     }
                     if (payload.temperatureSet) {
                         const temperature = Number(payload.temperatureSet);
                         node.log(temperature);
                         if (!isNaN(temperature))
-                            device.temperatureSet = temperature;
+                            parameters.temperatureSet = temperature;
                     }
                     if (payload.airSwingUD) {
                         const airSwingUD = Number(isNaN(payload.airSwingUD)
@@ -127,7 +128,7 @@ module.exports = function (RED) {
                             : payload.airSwingUD);
                         node.log(airSwingUD);
                         if (!isNaN(airSwingUD))
-                            device.airSwingUD = airSwingUD;
+                            parameters.airSwingUD = airSwingUD;
                     }
                     if (payload.airSwingLR) {
                         const airSwingLR = Number(isNaN(payload.airSwingLR)
@@ -135,7 +136,7 @@ module.exports = function (RED) {
                             : payload.airSwingLR);
                         node.log(airSwingLR);
                         if (!isNaN(airSwingLR))
-                            device.airSwingLR = airSwingLR;
+                            parameters.airSwingLR = airSwingLR;
                     }
                     if (payload.fanAutoMode) {
                         const fanAutoMode = Number(isNaN(payload.fanAutoMode)
@@ -143,7 +144,7 @@ module.exports = function (RED) {
                             : payload.fanAutoMode);
                         node.log(fanAutoMode);
                         if (!isNaN(fanAutoMode))
-                            device.fanAutoMode = fanAutoMode;
+                            parameters.fanAutoMode = fanAutoMode;
                     }
                     if (payload.fanSpeed) {
                         const fanSpeed = Number(isNaN(payload.fanSpeed)
@@ -151,21 +152,21 @@ module.exports = function (RED) {
                             : payload.fanSpeed);
                         node.log(fanSpeed);
                         if (!isNaN(fanSpeed))
-                            device.fanSpeed = fanSpeed;
+                            parameters.fanSpeed = fanSpeed;
                     }
 
-                    msg.payload = await client.setParameters(deviceId, device.parameters);
+                    msg.payload = await client.setParameters(deviceId, parameters);
                     send(msg);
                     break;
                 } catch (error) {
                     try {
                         if (error.httpCode === 401) {
                             let accessToken = await client.login(credentials.username, credentials.password);
-                            credentials.accessToken = accessToken;
+                            credentials.accessToken = accessToken.uToken;
                             RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
                             node.log('Obtained a new access token.');
                         } else if (error.httpCode === 403) {
-                            const err = new Error(`An error ocurred while trying to set device parameter. Check Device ID (${deviceId}) or credentials: ${error}`)
+                            const err = new Error(`An error ocurred while trying to set device parameter. Check Device ID (${deviceId}) or credentials: ${JSON.stringify(error)}`)
                             if (done) {
                                 done(err);
                             } else {
@@ -173,7 +174,7 @@ module.exports = function (RED) {
                             }
                             return;
                         } else {
-                            const err = new Error(`An error ocurred while trying to set device parameter: ${error}`)
+                            const err = new Error(`An error ocurred while trying to set device parameter: ${JSON.stringify(error)}`)
                             if (done) {
                                 done(err);
                             } else {

@@ -30,21 +30,19 @@ module.exports = function (RED) {
             }
             while (retryCount++ < maxRetry) {
                 try {
-                    node.log(msg.payload);
                     const deviceId = _config.deviceId ? _config.deviceId : msg.payload;
-                    const device = await client.getDevice(deviceId);
-                    msg.payload = _tools.mapObject(device);
+                    msg.payload = await client.getDevice(deviceId);
                     send(msg);
                     break;
                 } catch (error) {
                     try {
                         if (error.httpCode === 401) {
                             let accessToken = await client.login(credentials.username, credentials.password);
-                            credentials.accessToken = accessToken;
+                            credentials.accessToken = accessToken.uToken;
                             RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
                             node.log('Obtained a new access token.');
                         } else if (error.httpCode === 403) {
-                            const err = new Error(`An error ocurred while trying to get device. Check Device ID or credentials: ${error}`)
+                            const err = new Error(`An error ocurred while trying to get device. Check Device ID or credentials: ${JSON.stringify(error)}`)
                             if (done) {
                                 done(err);
                             } else {
@@ -52,7 +50,7 @@ module.exports = function (RED) {
                             }
                             return;
                         } else {
-                            const err = new Error(`An error ocurred while trying to get device: ${error}`)
+                            const err = new Error(`An error ocurred while trying to get device: ${JSON.stringify(error)}`)
                             if (done) {
                                 done(err);
                             } else {

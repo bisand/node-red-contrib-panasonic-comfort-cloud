@@ -3,13 +3,15 @@
     "configurations": [
         {
             "type": "node",
-            "runtimeVersion": "12.22.7",
+            // "runtimeVersion": "16",
             "request": "launch",
             "name": "Launch via NPM",
             "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run-script",
-                "debug"
+                "debug",
+                "--preserve-symlinks",
+                "--preserve-symlinks-main"
             ],
             "port": 9229,
             "stopOnEntry": false,

@@ -22,19 +22,18 @@ module.exports = function (RED) {
             }
             while (retryCount++ < maxRetry) {
                 try {
-                    const groups = await client.getGroups();
-                    msg.payload = _tools.mapObject(groups);
+                    msg.payload = await client.getGroups();
                     send(msg);
                     break;
                 } catch (error) {
                     try {
                         if (error.httpCode === 401) {
                             let accessToken = await client.login(credentials.username, credentials.password);
-                            credentials.accessToken = accessToken;
+                            credentials.accessToken = accessToken.uToken;
                             RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
                             node.log('Obtained a new access token.');
                         } else if (error.httpCode === 403) {
-                            const err = new Error(`An error ocurred while trying to get group. Check credentials: ${error}`)
+                            const err = new Error(`An error ocurred while trying to get group. Check credentials: ${JSON.stringify(error)}`)
                             if (done) {
                                 done(err);
                             } else {
@@ -42,7 +41,7 @@ module.exports = function (RED) {
                             }
                             return;
                         } else {
-                            const err = new Error(`An error ocurred while trying to get group: ${error}`)
+                            const err = new Error(`An error ocurred while trying to get group: ${JSON.stringify(error)}`)
                             if (done) {
                                 done(err);
                             } else {
