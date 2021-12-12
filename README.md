@@ -87,7 +87,8 @@ Valid values for **fanSpeed**:
     "fanSpeed": "Auto"
 }
 ```
-
+ ![Illustration on how to use the different nodes](https://raw.githubusercontent.com/bisand/node-red-contrib-panasonic-comfort-cloud/master/assets/images/Nodes.png)
+ [Click here do download demo flow](https://raw.githubusercontent.com/bisand/node-red-contrib-panasonic-comfort-cloud/master/examples/demo.json)
 ## Licence
 
 [MIT](https://github.com/bisand/node-red-contrib-panasonic-comfort-cloud/blob/HEAD/LICENSE)
