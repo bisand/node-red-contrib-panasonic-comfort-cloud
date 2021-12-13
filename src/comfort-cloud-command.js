@@ -1,6 +1,6 @@
 // import { Device, Group, ComfortCloudClient } from 'panasonic-comfort-cloud-api';
-const { ComfortCloud } = require('panasonic-comfort-cloud-api');
 const {
+    ComfortCloud,
     Power,
     AirSwingLR,
     AirSwingUD,
@@ -8,7 +8,7 @@ const {
     EcoMode,
     OperationMode,
     FanSpeed
-} = require('panasonic-comfort-cloud-api/dist/models/enums');
+} = require('panasonic-comfort-cloud-api');
 
 Object.defineProperty(Object.prototype, "getProp", {
     value: function (prop) {
