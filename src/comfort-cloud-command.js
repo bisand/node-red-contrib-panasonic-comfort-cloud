@@ -96,7 +96,7 @@ module.exports = function (RED) {
                         const power = Number(isNaN(payload.operate)
                             ? Power.getProp(payload.operate)
                             : payload.operate);
-                        node.log(power);
+                        node.log(`Power: ${power}`);
                         if (!isNaN(power))
                             parameters.power = power;
                     }
@@ -104,7 +104,7 @@ module.exports = function (RED) {
                         const operationMode = Number(isNaN(payload.operationMode)
                             ? OperationMode.getProp(payload.operationMode)
                             : payload.operationMode);
-                        node.log(operationMode);
+                        node.log(`Operation Mode: ${operationMode}`);
                         if (!isNaN(operationMode))
                             parameters.operationMode = operationMode;
                     }
@@ -112,13 +112,13 @@ module.exports = function (RED) {
                         const ecoMode = Number(isNaN(payload.ecoMode)
                             ? EcoMode.getProp(payload.ecoMode)
                             : payload.ecoMode);
-                        node.log(ecoMode);
+                        node.log(`Eco Mode: ${ecoMode}`);
                         if (!isNaN(ecoMode))
                             parameters.ecoMode = ecoMode;
                     }
                     if (payload.temperatureSet) {
                         const temperature = Number(payload.temperatureSet);
-                        node.log(temperature);
+                        node.log(`Temperature: ${temperature}`);
                         if (!isNaN(temperature))
                             parameters.temperatureSet = temperature;
                     }
@@ -126,7 +126,7 @@ module.exports = function (RED) {
                         const airSwingUD = Number(isNaN(payload.airSwingUD)
                             ? AirSwingUD.getProp(payload.airSwingUD)
                             : payload.airSwingUD);
-                        node.log(airSwingUD);
+                        node.log(`Air swing UD: ${airSwingUD}`);
                         if (!isNaN(airSwingUD))
                             parameters.airSwingUD = airSwingUD;
                     }
@@ -134,7 +134,7 @@ module.exports = function (RED) {
                         const airSwingLR = Number(isNaN(payload.airSwingLR)
                             ? AirSwingLR.getProp(payload.airSwingLR)
                             : payload.airSwingLR);
-                        node.log(airSwingLR);
+                        node.log(`Air swing LR: ${airSwingLR}`);
                         if (!isNaN(airSwingLR))
                             parameters.airSwingLR = airSwingLR;
                     }
@@ -142,7 +142,7 @@ module.exports = function (RED) {
                         const fanAutoMode = Number(isNaN(payload.fanAutoMode)
                             ? FanAutoMode.getProp(payload.fanAutoMode)
                             : payload.fanAutoMode);
-                        node.log(fanAutoMode);
+                        node.log(`Fan auto mode: ${fanAutoMode}`);
                         if (!isNaN(fanAutoMode))
                             parameters.fanAutoMode = fanAutoMode;
                     }
@@ -150,7 +150,7 @@ module.exports = function (RED) {
                         const fanSpeed = Number(isNaN(payload.fanSpeed)
                             ? FanSpeed.getProp(payload.fanSpeed)
                             : payload.fanSpeed);
-                        node.log(fanSpeed);
+                        node.log(`Fan speed: ${fanSpeed}`);
                         if (!isNaN(fanSpeed))
                             parameters.fanSpeed = fanSpeed;
                     }
