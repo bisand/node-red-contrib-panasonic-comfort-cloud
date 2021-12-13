@@ -1,5 +1,11 @@
 # node-red-contrib-panasonic-comfort-cloud
 
+![NPM](https://img.shields.io/npm/l/node-red-contrib-panasonic-comfort-cloud)
+![GitHub last commit](https://img.shields.io/github/last-commit/bisand/node-red-contrib-panasonic-comfort-cloud)
+![Travis (.com)](https://img.shields.io/travis/com/bisand/node-red-contrib-panasonic-comfort-cloud)
+![npm](https://img.shields.io/npm/v/node-red-contrib-panasonic-comfort-cloud)
+![npm](https://img.shields.io/npm/dw/node-red-contrib-panasonic-comfort-cloud)
+
 Node-RED support for Panasonic Comfort Cloud to control air conditioning systems over REST API. This libaray uses the same endpoints as the mobile app Panasonic Comfort Cloud. Based on [panasonic-comfort-cloud-api](https://www.npmjs.com/package/panasonic-comfort-cloud-api).
 
 # Features
