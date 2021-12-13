@@ -93,12 +93,12 @@ module.exports = function (RED) {
                     const parameters = {};
 
                     if (payload.operate) {
-                        const power = Number(isNaN(payload.operate)
+                        const operate = Number(isNaN(payload.operate)
                             ? Power.getProp(payload.operate)
                             : payload.operate);
-                        node.log(`Power: ${power}`);
-                        if (!isNaN(power))
-                            parameters.power = power;
+                        node.log(`Power: ${operate}`);
+                        if (!isNaN(operate))
+                            parameters.operate = operate;
                     }
                     if (payload.operationMode) {
                         const operationMode = Number(isNaN(payload.operationMode)
