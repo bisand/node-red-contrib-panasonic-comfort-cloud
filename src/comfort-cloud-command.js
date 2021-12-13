@@ -8,7 +8,7 @@ const {
     EcoMode,
     OperationMode,
     FanSpeed
-} = require('panasonic-comfort-cloud-api');
+} = require('panasonic-comfort-cloud-api/dist/models/enums');
 
 Object.defineProperty(Object.prototype, "getProp", {
     value: function (prop) {
