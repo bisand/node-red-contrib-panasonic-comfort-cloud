@@ -1,6 +1,6 @@
 // import { Device, Group, ComfortCloudClient } from 'panasonic-comfort-cloud-api';
 const { ComfortCloud } = require('panasonic-comfort-cloud-api');
-const Tools = require('./tools');
+// const Tools = require('./tools');
 
 module.exports = function (RED) {
     function ComfortCloudGroups(config) {
