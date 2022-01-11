@@ -7,9 +7,9 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         const node = this;
         const _config = config;
-        const _tools = new Tools();
-        var context = this.context();
-        var globalContext = this.context().global;
+        // const _tools = new Tools();
+        // var context = this.context();
+        // var globalContext = this.context().global;
         let credentials = RED.nodes.getCredentials(config.comfortCloudConfig);
         node.on('input', async function (msg, send, done) {
             // For maximum backwards compatibility, check that send exists.
