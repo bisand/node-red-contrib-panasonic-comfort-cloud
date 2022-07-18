@@ -29,12 +29,16 @@
   },
   "homepage": "https://github.com/bisand/node-red-contrib-panasonic-comfort-cloud#readme",
   "node-red": {
+    "version": ">=2.0.0",
     "nodes": {
       "pcc-config": "./src/comfort-cloud-config.js",
       "pcc-groups": "./src/comfort-cloud-groups.js",
       "pcc-device": "./src/comfort-cloud-device.js",
       "pcc-command": "./src/comfort-cloud-command.js"
     }
+  },
+  "engines": {
+    "node": ">=14.0.0"
   },
   "dependencies": {
     "panasonic-comfort-cloud-api": "^1.3.0"
