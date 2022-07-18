@@ -37,9 +37,9 @@
     }
   },
   "dependencies": {
-    "panasonic-comfort-cloud-api": "^1.1.0"
+    "panasonic-comfort-cloud-api": "^1.3.0"
   },
   "devDependencies": {
-    "node-red": "^2.1.4"
+    "node-red": "^3.0.0"
   }
 }
