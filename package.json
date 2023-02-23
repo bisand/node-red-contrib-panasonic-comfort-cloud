@@ -8,6 +8,7 @@
     "debug": "node --nolazy --inspect-brk=9229 ./node_modules/node-red/red.js -v -u . -s ./node_modules/node-red/settings.js"
   },
   "repository": {
+    "test": "echo 'no tests available'",
     "type": "git",
     "url": "git+https://github.com/bisand/node-red-contrib-panasonic-comfort-cloud.git"
   },
