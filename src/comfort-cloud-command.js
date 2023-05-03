@@ -7,7 +7,8 @@ const {
     FanAutoMode,
     EcoMode,
     OperationMode,
-    FanSpeed
+    FanSpeed,
+    NanoeMode
 } = require('panasonic-comfort-cloud-api');
 
 Object.defineProperty(Object.prototype, "getProp", {
@@ -153,6 +154,14 @@ module.exports = function (RED) {
                         node.log(`Fan speed: ${fanSpeed}`);
                         if (!isNaN(fanSpeed))
                             parameters.fanSpeed = fanSpeed;
+                    }
+                    if (payload.nanoe) {
+                        const nanoe = Number(isNaN(payload.nanoe)
+                            ? NanoeMode.getProp(payload.nanoe)
+                            : payload.nanoe);
+                        node.log(`Nanoe mode: ${nanoe}`);
+                        if (!isNaN(nanoe))
+                            parameters.nanoe = nanoe;
                     }
 
                     msg.payload = await client.setParameters(deviceId, parameters);
