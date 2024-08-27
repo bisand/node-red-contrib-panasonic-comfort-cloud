@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-panasonic-comfort-cloud",
   "version": "1.5.1",
-  "description": "Node-RED implementation of panasonic-comfort-cloud-api",
+  "description": "Node-RED implementation of panasonic-comfort-cloud-client",
   "main": "comfort-cloud.js",
   "scripts": {
     "test": "echo 'no tests available'",
@@ -42,7 +42,7 @@
     "node": ">=14.0.0"
   },
   "dependencies": {
-    "panasonic-comfort-cloud-api": "^1.4.0"
+    "panasonic-comfort-cloud-client": "^2.0.2"
   },
   "devDependencies": {
     "node-red": "^3.1.0"

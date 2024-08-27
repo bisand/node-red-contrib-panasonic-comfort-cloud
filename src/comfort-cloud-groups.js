@@ -1,5 +1,5 @@
-// import { Device, Group, ComfortCloudClient } from 'panasonic-comfort-cloud-api';
-const { ComfortCloud } = require('panasonic-comfort-cloud-api');
+// import { Device, Group, ComfortCloudClient } from 'panasonic-comfort-cloud-client';
+const { ComfortCloudClient } = require('panasonic-comfort-cloud-client');
 // const Tools = require('./tools');
 
 module.exports = function (RED) {
@@ -12,8 +12,8 @@ module.exports = function (RED) {
         // var globalContext = this.context().global;
         var credentials = RED.nodes.getCredentials(config.comfortCloudConfig);
         node.on('input', async function (msg, send, done) {
-            let client = new ComfortCloud();
-            client.token = credentials.accessToken ? credentials.accessToken : '42';
+            let client = new ComfortCloudClient();
+            await client.login(credentials.username, credentials.password);
             let retryCount = 0;
             const maxRetry = 3;
             if (msg.payload === undefined || msg.payload === null || msg.payload === '') {
