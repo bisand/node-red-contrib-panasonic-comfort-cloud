@@ -16,8 +16,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"github.vscode-pull-request-github",
-				"eamodio.gitlens"
+				"github.vscode-pull-request-github"
 			]
 		}
 	}
