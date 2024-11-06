@@ -11,6 +11,7 @@ const {
     NanoeMode,
     InsideCleaning
 } = require('panasonic-comfort-cloud-client');
+const Tools = require('./tools');
 
 Object.defineProperty(Object.prototype, "getProp", {
     value: function (prop) {
@@ -53,6 +54,15 @@ module.exports = function (RED) {
         RED.nodes.createNode(this, config);
         const node = this;
         const _config = config;
+        const _tools = new Tools();
+        if (!_config.appVersion) {
+            _tools.getCcAppVersion().then(version => {
+                _config.appVersion = version;
+            }).catch(error => {
+                console.error('Error getting app version:', error);
+                node.error(error);
+            });
+        }
         // var context = this.context();
         // var globalContext = this.context().global;
         let credentials = RED.nodes.getCredentials(config.comfortCloudConfig);
@@ -61,7 +71,7 @@ module.exports = function (RED) {
             // If this node is installed in Node-RED 0.x, it will need to
             // fallback to using `node.send`
             send = send || function () { node.send.apply(node, arguments) }
-            let client = new ComfortCloudClient();
+            let client = new ComfortCloudClient(_config.appVersion);
             await client.login(credentials.username, credentials.password);
             let retryCount = 0;
             const maxRetry = 3;

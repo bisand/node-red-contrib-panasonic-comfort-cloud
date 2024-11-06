@@ -22,5 +22,23 @@ class Tools {
         return result;
     }
 
+    /**
+     * Returns Panasonic Comfort Cloud app version
+     * @returns Version number as String
+     */
+    async getCcAppVersion() {
+        try {
+            const uri = new URL(`https://itunes.apple.com/lookup?id=1348640525`);
+            const response = await fetch(uri.href).then(response => response.json())
+            const version = response?.results[0]?.version;
+            return version;
+        } catch (error) {
+            console.error(error);
+            node.error(error, msg);
+        }
+        return this._ccAppVersion;
+    }
+
+
 }
 module.exports = Tools;

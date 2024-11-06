@@ -1,18 +1,26 @@
 // import { Device, Group, ComfortCloudClient } from 'panasonic-comfort-cloud-client';
 const { ComfortCloudClient } = require('panasonic-comfort-cloud-client');
-// const Tools = require('./tools');
+const Tools = require('./tools');
 
 module.exports = function (RED) {
     function ComfortCloudGroups(config) {
         RED.nodes.createNode(this, config);
         const node = this;
-        // const _config = config;
-        // const _tools = new Tools();
+        const _config = config;
+        const _tools = new Tools();
+        if (!_config.appVersion) {
+            _tools.getCcAppVersion().then(version => {
+                _config.appVersion = version;
+            }).catch(error => {
+                console.error('Error getting app version:', error);
+                node.error(error);
+            });
+        }
         // var context = this.context();
         // var globalContext = this.context().global;
         var credentials = RED.nodes.getCredentials(config.comfortCloudConfig);
         node.on('input', async function (msg, send, done) {
-            let client = new ComfortCloudClient();
+            let client = new ComfortCloudClient(_config.appVersion);
             await client.login(credentials.username, credentials.password);
             let retryCount = 0;
             const maxRetry = 3;
