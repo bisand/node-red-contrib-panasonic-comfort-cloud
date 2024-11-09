@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
-      - run: npm ci
+      - run: npm install
       - run: npm test
 
   publish-npm:
@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: lts/*
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
+      - run: npm install
       - if: ${{ github.event.release.prerelease }}
         run: npm publish . --tag beta
         env:
