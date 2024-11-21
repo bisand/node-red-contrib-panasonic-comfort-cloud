@@ -1,5 +1,4 @@
 // import { Device, Group, ComfortCloudClient } from 'panasonic-comfort-cloud-client';
-const { ComfortCloudClient } = require('panasonic-comfort-cloud-client');
 const { handleError, getClient } = require('./tools');
 // const Tools = require('./tools');
 

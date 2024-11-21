@@ -1,4 +1,3 @@
-const { ComfortCloudClient } = require('panasonic-comfort-cloud-client');
 const { handleError, getClient } = require('./tools');
 
 module.exports = function (RED) {

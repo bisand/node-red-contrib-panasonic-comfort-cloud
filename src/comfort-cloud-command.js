@@ -1,6 +1,5 @@
 // import { Device, Group, ComfortCloudClient } from 'panasonic-comfort-cloud-client';
 const {
-    ComfortCloudClient,
     Power,
     AirSwingLR,
     AirSwingUD,
