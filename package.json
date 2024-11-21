@@ -45,6 +45,6 @@
     "panasonic-comfort-cloud-client": "^2.0.3"
   },
   "devDependencies": {
-    "node-red": "^4.0.2"
+    "node-red": "^4.0.5"
   }
 }

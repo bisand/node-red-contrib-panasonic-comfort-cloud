@@ -11,6 +11,7 @@ const {
     NanoeMode,
     InsideCleaning
 } = require('panasonic-comfort-cloud-client');
+const { handleError, getClient } = require('./tools');
 
 Object.defineProperty(Object.prototype, "getProp", {
     value: function (prop) {
@@ -57,170 +58,155 @@ module.exports = function (RED) {
         // var globalContext = this.context().global;
         let credentials = RED.nodes.getCredentials(config.comfortCloudConfig);
         node.on('input', async function (msg, send, done) {
-            // For maximum backwards compatibility, check that send exists.
-            // If this node is installed in Node-RED 0.x, it will need to
-            // fallback to using `node.send`
-            send = send || function () { node.send.apply(node, arguments) }
-            let client = new ComfortCloudClient();
-            await client.login(credentials.username, credentials.password);
-            let retryCount = 0;
-            const maxRetry = 3;
+            try {
+                // For maximum backwards compatibility, check that send exists.
+                // If this node is installed in Node-RED 0.x, it will need to
+                // fallback to using `node.send`
+                send = send || function () { node.send.apply(node, arguments) }
 
-            const payloadValidation = validatePayload(msg.payload)
-            if (!payloadValidation.result) {
-                if (done) {
-                    done(payloadValidation.err);
-                } else {
-                    node.error(payloadValidation.err, msg);
-                }
-                return;
-            }
-            const payload = payloadValidation.payload;
+                let client = await getClient(credentials);
+                let retryCount = 0;
+                const maxRetry = 3;
 
-            if (!_config.deviceId && (!payload || (!payload.deviceId && !payload.deviceGuid))) {
-                const err = 'Missing Device ID. Send Device ID via payload or define in config.';
-                if (done) {
-                    done(err);
-                } else {
-                    node.error(err, msg);
-                }
-                return;
-            }
-
-            while (retryCount++ < maxRetry) {
-                try {
-                    const pid = (payload.deviceId ? payload.deviceId : payload.deviceGuid);
-                    const deviceId = pid ? pid : _config.deviceId;
-                    // const device = await client.getDevice(deviceId);
-                    const parameters = {};
-
-                    if (payload.operate) {
-                        const operate = Number(isNaN(payload.operate)
-                            ? Power.getProp(payload.operate)
-                            : payload.operate);
-                        node.log(`Power: ${operate}`);
-                        if (!isNaN(operate))
-                            parameters.operate = operate;
-                    }
-                    if (payload.operationMode) {
-                        const operationMode = Number(isNaN(payload.operationMode)
-                            ? OperationMode.getProp(payload.operationMode)
-                            : payload.operationMode);
-                        node.log(`Operation Mode: ${operationMode}`);
-                        if (!isNaN(operationMode))
-                            parameters.operationMode = operationMode;
-                    }
-                    if (payload.ecoMode) {
-                        const ecoMode = Number(isNaN(payload.ecoMode)
-                            ? EcoMode.getProp(payload.ecoMode)
-                            : payload.ecoMode);
-                        node.log(`Eco Mode: ${ecoMode}`);
-                        if (!isNaN(ecoMode))
-                            parameters.ecoMode = ecoMode;
-                    }
-                    if (payload.temperatureSet) {
-                        const temperature = Number(payload.temperatureSet);
-                        node.log(`Temperature: ${temperature}`);
-                        if (!isNaN(temperature))
-                            parameters.temperatureSet = temperature;
-                    }
-                    if (payload.airSwingUD) {
-                        const airSwingUD = Number(isNaN(payload.airSwingUD)
-                            ? AirSwingUD.getProp(payload.airSwingUD)
-                            : payload.airSwingUD);
-                        node.log(`Air swing UD: ${airSwingUD}`);
-                        if (!isNaN(airSwingUD))
-                            parameters.airSwingUD = airSwingUD;
-                    }
-                    if (payload.airSwingLR) {
-                        const airSwingLR = Number(isNaN(payload.airSwingLR)
-                            ? AirSwingLR.getProp(payload.airSwingLR)
-                            : payload.airSwingLR);
-                        node.log(`Air swing LR: ${airSwingLR}`);
-                        if (!isNaN(airSwingLR))
-                            parameters.airSwingLR = airSwingLR;
-                    }
-                    if (payload.fanAutoMode) {
-                        const fanAutoMode = Number(isNaN(payload.fanAutoMode)
-                            ? FanAutoMode.getProp(payload.fanAutoMode)
-                            : payload.fanAutoMode);
-                        node.log(`Fan auto mode: ${fanAutoMode}`);
-                        if (!isNaN(fanAutoMode))
-                            parameters.fanAutoMode = fanAutoMode;
-                    }
-                    if (payload.fanSpeed) {
-                        const fanSpeed = Number(isNaN(payload.fanSpeed)
-                            ? FanSpeed.getProp(payload.fanSpeed)
-                            : payload.fanSpeed);
-                        node.log(`Fan speed: ${fanSpeed}`);
-                        if (!isNaN(fanSpeed))
-                            parameters.fanSpeed = fanSpeed;
-                    }
-                    if (payload.nanoe) {
-                        const nanoe = Number(isNaN(payload.nanoe)
-                            ? NanoeMode.getProp(payload.nanoe)
-                            : payload.nanoe);
-                        node.log(`Nanoe mode: ${nanoe}`);
-                        if (!isNaN(nanoe))
-                            parameters.nanoe = nanoe;
-                    }
-                    if (payload.insideCleaning) {
-                        const insideCleaning = Number(isNaN(payload.insideCleaning)
-                            ? InsideCleaning.getProp(payload.insideCleaning)
-                            : payload.insideCleaning);
-                        node.log(`insideCleaning: ${insideCleaning}`);
-                        if (!isNaN(insideCleaning))
-                            parameters.insideCleaning = insideCleaning;
-                    }
-
-                    msg.payload = await client.setParameters(deviceId, parameters);
+                if (msg.payload === undefined || msg.payload === null || msg.payload === '') {
+                    msg.payload = null;
                     send(msg);
-                    break;
-                } catch (error) {
+                    return;
+                }
+
+                const payloadValidation = validatePayload(msg.payload)
+                if (!payloadValidation.result) {
+                    handleError(done, payloadValidation.err, node, msg);
+                    return;
+                }
+                const payload = payloadValidation.payload;
+
+                if (!_config.deviceId && (!payload || (!payload.deviceId && !payload.deviceGuid))) {
+                    const err = 'Missing Device ID. Send Device ID via payload or define in config.';
+                    handleError(done, err, node, msg);
+                    return;
+                }
+
+                const pid = (payload.deviceId ? payload.deviceId : payload.deviceGuid);
+                const deviceId = pid ? pid : _config.deviceId;
+                // const device = await client.getDevice(deviceId);
+
+                while (retryCount++ < maxRetry) {
                     try {
-                        if (error.httpCode === 401) {
-                            let accessToken = await client.login(credentials.username, credentials.password);
-                            credentials.accessToken = accessToken.uToken;
-                            RED.nodes.addCredentials(config.comfortCloudConfig, credentials);
-                            node.log('Obtained a new access token.');
-                        } else if (error.httpCode === 403) {
-                            const err = new Error(`An error ocurred while trying to set device parameter. Check Device ID (${deviceId}) or credentials: ${JSON.stringify(error)}`)
-                            if (done) {
-                                done(err);
-                            } else {
-                                node.error(err, msg);
-                            }
-                            return;
-                        } else {
-                            const err = new Error(`An error ocurred while trying to set device parameter: ${JSON.stringify(error)}`)
-                            if (done) {
-                                done(err);
-                            } else {
-                                node.error(err, msg);
-                            }
-                            return;
+                        const parameters = {};
+
+                        if (payload.operate) {
+                            const operate = Number(isNaN(payload.operate)
+                                ? Power.getProp(payload.operate)
+                                : payload.operate);
+                            node.log(`Power: ${operate}`);
+                            if (!isNaN(operate))
+                                parameters.operate = operate;
                         }
-                    } catch (loginErr) {
-                        if (done) {
-                            done(loginErr);
-                        } else {
-                            node.error(loginErr, msg);
+                        if (payload.operationMode) {
+                            const operationMode = Number(isNaN(payload.operationMode)
+                                ? OperationMode.getProp(payload.operationMode)
+                                : payload.operationMode);
+                            node.log(`Operation Mode: ${operationMode}`);
+                            if (!isNaN(operationMode))
+                                parameters.operationMode = operationMode;
                         }
+                        if (payload.ecoMode) {
+                            const ecoMode = Number(isNaN(payload.ecoMode)
+                                ? EcoMode.getProp(payload.ecoMode)
+                                : payload.ecoMode);
+                            node.log(`Eco Mode: ${ecoMode}`);
+                            if (!isNaN(ecoMode))
+                                parameters.ecoMode = ecoMode;
+                        }
+                        if (payload.temperatureSet) {
+                            const temperature = Number(payload.temperatureSet);
+                            node.log(`Temperature: ${temperature}`);
+                            if (!isNaN(temperature))
+                                parameters.temperatureSet = temperature;
+                        }
+                        if (payload.airSwingUD) {
+                            const airSwingUD = Number(isNaN(payload.airSwingUD)
+                                ? AirSwingUD.getProp(payload.airSwingUD)
+                                : payload.airSwingUD);
+                            node.log(`Air swing UD: ${airSwingUD}`);
+                            if (!isNaN(airSwingUD))
+                                parameters.airSwingUD = airSwingUD;
+                        }
+                        if (payload.airSwingLR) {
+                            const airSwingLR = Number(isNaN(payload.airSwingLR)
+                                ? AirSwingLR.getProp(payload.airSwingLR)
+                                : payload.airSwingLR);
+                            node.log(`Air swing LR: ${airSwingLR}`);
+                            if (!isNaN(airSwingLR))
+                                parameters.airSwingLR = airSwingLR;
+                        }
+                        if (payload.fanAutoMode) {
+                            const fanAutoMode = Number(isNaN(payload.fanAutoMode)
+                                ? FanAutoMode.getProp(payload.fanAutoMode)
+                                : payload.fanAutoMode);
+                            node.log(`Fan auto mode: ${fanAutoMode}`);
+                            if (!isNaN(fanAutoMode))
+                                parameters.fanAutoMode = fanAutoMode;
+                        }
+                        if (payload.fanSpeed) {
+                            const fanSpeed = Number(isNaN(payload.fanSpeed)
+                                ? FanSpeed.getProp(payload.fanSpeed)
+                                : payload.fanSpeed);
+                            node.log(`Fan speed: ${fanSpeed}`);
+                            if (!isNaN(fanSpeed))
+                                parameters.fanSpeed = fanSpeed;
+                        }
+                        if (payload.nanoe) {
+                            const nanoe = Number(isNaN(payload.nanoe)
+                                ? NanoeMode.getProp(payload.nanoe)
+                                : payload.nanoe);
+                            node.log(`Nanoe mode: ${nanoe}`);
+                            if (!isNaN(nanoe))
+                                parameters.nanoe = nanoe;
+                        }
+                        if (payload.insideCleaning) {
+                            const insideCleaning = Number(isNaN(payload.insideCleaning)
+                                ? InsideCleaning.getProp(payload.insideCleaning)
+                                : payload.insideCleaning);
+                            node.log(`insideCleaning: ${insideCleaning}`);
+                            if (!isNaN(insideCleaning))
+                                parameters.insideCleaning = insideCleaning;
+                        }
+
+                        msg.payload = await client.setParameters(deviceId, parameters);
+                        send(msg);
                         break;
+                    } catch (error) {
+                        try {
+                            if (error.httpCode === 401 || error.httpCode === 412) {
+                                await client.login(credentials.username, credentials.password);
+                                node.log('Obtained a new access token.');
+                            } else if (error.httpCode === 403) {
+                                const err = new Error(`An error ocurred while trying to set device parameter. Check Device ID (${deviceId}) or credentials: ${JSON.stringify(error)}`)
+                                handleError(done, err, node, msg);
+                                return;
+                            } else {
+                                const err = new Error(`An error ocurred while trying to set device parameter: ${JSON.stringify(error)}`)
+                                handleError(done, err, node, msg);
+                                return;
+                            }
+                        } catch (loginErr) {
+                            handleError(done, loginErr, node, msg);
+                            break;
+                        }
                     }
                 }
-            }
-            if (retryCount >= maxRetry) {
-                const retryErr = new Error('Reached max retry count ' + maxRetry + '. Please check your credentials, or read the logs for more information.');
-                if (done) {
-                    done(retryErr);
-                } else {
-                    node.error(retryErr, msg);
+                if (retryCount >= maxRetry) {
+                    const retryErr = new Error('Reached max retry count ' + maxRetry + '. Please check your credentials, or read the logs for more information.');
+                    handleError(done, retryErr, node, msg);
                 }
-            }
 
-            if (done) {
-                done();
+                if (done) {
+                    done();
+                }
+            } catch (error) {
+                handleError(done, error, node, msg);
             }
         });
     }
