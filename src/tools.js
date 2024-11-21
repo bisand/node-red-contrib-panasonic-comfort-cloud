@@ -1,5 +1,7 @@
 "use strict";
 
+const { ComfortCloudClient } = require('panasonic-comfort-cloud-client');
+
 class Tools {
 
     constructor() { }
@@ -23,4 +25,25 @@ class Tools {
     }
 
 }
-module.exports = Tools;
+
+function handleError(done, error, node, msg) {
+    if (done) {
+        done(error);
+    } else {
+        node.error(error, msg);
+    }
+}
+
+let clients = {};
+
+async function getClient(credentials) {
+    const { username, password } = credentials;
+    if (!clients[username]) {
+        let clientInstance = new ComfortCloudClient();
+        await clientInstance.login(username, password);
+        clients[username] = clientInstance;
+    }
+    return clients[username];
+}
+
+module.exports = { Tools, handleError, getClient };
