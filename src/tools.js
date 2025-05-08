@@ -54,7 +54,6 @@ function getRequestOptions(method, uri) {
 async function getCcAppVersion() {
     try {
         const uri = 'https://itunes.apple.com/lookup?id=1348640525'
-        const options = getRequestOptions('GET', uri)
         const response = await fetch(uri)
         const data = await response.json()
         const version = data.results[0].version
@@ -62,7 +61,7 @@ async function getCcAppVersion() {
     } catch (error) {
         console.error(error)
     }
-    return this._ccAppVersion
+    return undefined
 }
 
 function handleError(done, error, node, msg) {

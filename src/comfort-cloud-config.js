@@ -1,6 +1,3 @@
-const { settings } = require('node-red');
-const { getCcAppVersion } = require('./tools');
-
 module.exports = function (RED) {
     function ComfortCloudConfig(config) {
         RED.nodes.createNode(this, config);
