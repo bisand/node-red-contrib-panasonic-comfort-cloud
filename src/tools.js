@@ -1,8 +1,6 @@
 "use strict"
 
 const { ComfortCloudClient } = require('panasonic-comfort-cloud-client')
-const { version: moduleVersion } = require('../package.json')
-const { devDependencies } = require('../package.json')
 
 class Tools {
 
