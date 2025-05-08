@@ -1,7 +1,11 @@
+const { settings } = require('node-red');
+const { getCcAppVersion } = require('./tools');
+
 module.exports = function (RED) {
     function ComfortCloudConfig(config) {
         RED.nodes.createNode(this, config);
         var node = this;
+        node.appVersion = config.appVersion;
 
         node.on('export', () => {
             console.log('EXPORT! Nothing done!');
@@ -18,6 +22,6 @@ module.exports = function (RED) {
             password: {
                 type: 'password',
             }
-        },
+        }
     });
 };

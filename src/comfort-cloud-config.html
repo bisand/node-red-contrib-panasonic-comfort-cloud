@@ -1,4 +1,3 @@
-<!-- <script type="text/javascript" src="tools.js"></script> -->
 <script type="text/javascript">
 
     RED.nodes.registerType("pcc-config", {
@@ -17,7 +16,10 @@
         defaults: {
             name: {
                 value: ""
-            }
+            },
+            appVersion: {
+                value: ""
+            },
         },
         label: function () {
             return this.name ? this.name : 'Comfort Cloud Config';
@@ -41,5 +43,16 @@
     <div class="form-row">
         <label for="node-config-input-password"><i class="fa fa-key"></i> Password</label>
         <input type="password" id="node-config-input-password" placeholder="Password">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-appVersion"><i class="fa fa-code-branch"></i> App Version</label>
+        <input type="text" id="node-config-input-appVersion" placeholder="App Version">
+    </div>
+    <div class="form-row">
+        <div class="form-tips">
+            <em>
+                Note: Represents the version number of the Panasonic Comfort Cloud application. This value indicates the specific release version of the app, which is required API requests. Ensure this version matches the one expected by the Panasonic Comfort Cloud services. If the app version is not specified, the default value will be fetched from https://itunes.apple.com/lookup?id=1348640525.
+            </em>
+        </div>
     </div>
 </script>

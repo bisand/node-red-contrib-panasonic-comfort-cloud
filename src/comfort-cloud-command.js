@@ -55,7 +55,7 @@ module.exports = function (RED) {
         const _config = config;
         // var context = this.context();
         // var globalContext = this.context().global;
-        let credentials = RED.nodes.getCredentials(config.comfortCloudConfig);
+        const cfg = RED.nodes.getNode(config.comfortCloudConfig);
         node.on('input', async function (msg, send, done) {
             try {
                 // For maximum backwards compatibility, check that send exists.
@@ -63,7 +63,7 @@ module.exports = function (RED) {
                 // fallback to using `node.send`
                 send = send || function () { node.send.apply(node, arguments) }
 
-                let client = await getClient(credentials);
+                let client = await getClient(cfg);
                 let retryCount = 0;
                 const maxRetry = 3;
 
@@ -179,7 +179,7 @@ module.exports = function (RED) {
                     } catch (error) {
                         try {
                             if (error.httpCode === 401 || error.httpCode === 412) {
-                                await client.login(credentials.username, credentials.password);
+                                await client.login(cfg.credentials.username, cfg.credentials.password);
                                 node.log('Obtained a new access token.');
                             } else if (error.httpCode === 403) {
                                 const err = new Error(`An error ocurred while trying to set device parameter. Check Device ID (${deviceId}) or credentials: ${JSON.stringify(error)}`)

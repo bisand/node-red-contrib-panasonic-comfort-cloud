@@ -4,7 +4,7 @@ module.exports = function (RED) {
     function ComfortCloudGroups(config) {
         RED.nodes.createNode(this, config);
         const node = this;
-        const credentials = RED.nodes.getCredentials(config.comfortCloudConfig);
+        const cfg = RED.nodes.getNode(config.comfortCloudConfig);
 
         node.on('input', async function (msg, send, done) {
             try {
@@ -13,7 +13,7 @@ module.exports = function (RED) {
                 // fallback to using `node.send`
                 send = send || function () { node.send.apply(node, arguments) }
 
-                let client = await getClient(credentials);
+                let client = await getClient(cfg);
                 let retryCount = 0;
                 const maxRetry = 3;
 
@@ -31,7 +31,7 @@ module.exports = function (RED) {
                     } catch (error) {
                         if (error.httpCode === 401 || error.httpCode === 403 || error.httpCode === 412) {
                             try {
-                                await client.login(credentials.username, credentials.password);
+                                await client.login(cfg.credentials.username, cfg.credentials.password);
                                 node.log('Obtained a new access token.');
                             } catch (loginError) {
                                 handleError(done, loginError, node, msg);
