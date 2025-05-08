@@ -28,29 +28,6 @@ class Tools {
 
 }
 
-function getRequestOptions(method, uri) {
-    const noderedVersion = devDependencies && devDependencies['node-red']
-        ? devDependencies['node-red'].replace(/^[^\d]*/, '') // remove any non-numeric prefix like ^ or ~
-        : 'unknown'
-
-    const requestOptions = {
-        host: uri.host,
-        port: uri.port,
-        path: uri.path,
-        protocol: uri.protocol,
-        method: method,
-        headers: {
-            Connection: "Keep-Alive",
-            "Content-Type": "application/json charset=utf-8",
-            Accept: "application/json charset=utf-8",
-            Host: uri.hostname,
-            "User-Agent": `node-red/${noderedVersion} node-red-contrib-panasonic-comfort-cloud/${moduleVersion}`,
-        },
-    }
-
-    return requestOptions
-}
-
 async function getCcAppVersion() {
     try {
         const uri = 'https://itunes.apple.com/lookup?id=1348640525'
