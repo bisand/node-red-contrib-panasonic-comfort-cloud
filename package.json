@@ -39,12 +39,12 @@
     }
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "dependencies": {
-    "panasonic-comfort-cloud-client": "^2.0.3"
+    "panasonic-comfort-cloud-client": "^2.1.0"
   },
   "devDependencies": {
-    "node-red": "^4.0.5"
+    "node-red": "^4.0.9"
   }
 }
